@@ -1,0 +1,231 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ph.D. Entrance Form</title>
+  <link rel="stylesheet" href="index.css" />
+
+  <!-- jsPDF + html2canvas via CDN -->
+  <!-- index.html, inside <head> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
+  <!-- Hide PDF button when printing/exporting -->
+  <style>
+    @media print {
+      .pdf-button {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="pdf-content">
+    <form id="phdForm">
+      <img src="formlogo.png" alt="dsu-logo" class="logo" />
+
+      <h1>Dayananda Sagar University</h1>
+      <h3>APPLICATION FOR Ph.D. ENTRANCE TEST – December 2024</h3>
+
+      <label for="faculty">Faculty of: <span class="required-star">*</span></label>
+      <input type="text" id="faculty" name="faculty" required />
+
+      <label for="department">Department Name: <span class="required-star">*</span></label>
+      <input type="text" id="department" name="department" required />
+
+      <label for="fullName">Name in FULL BLOCK LETTER ONLY: <span class="required-star">*</span></label>
+      <input type="text" id="fullName" name="fullName" style="text-transform: uppercase;" required />
+
+      <label for="address">Address for Communication: <span class="required-star">*</span></label>
+      <textarea id="address" name="address" rows="3" required></textarea>
+
+      <label for="phone">Contact Phone No.: <span class="required-star">*</span></label>
+      <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="e.g., 9876543210" required />
+
+      <label for="email">Email ID: <span class="required-star">*</span></label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="dob">Date of Birth: <span class="required-star">*</span></label>
+      <input type="date" id="dob" name="dob" required />
+
+      <div class="flex-row">
+        <div class="radio-section">
+          <label>Sex: <span class="required-star">*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="sex" value="Male" required /> Male</label>
+            <label><input type="radio" name="sex" value="Female" /> Female</label>
+          </div>
+        </div>
+        <div class="radio-section">
+          <label>Nationality: <span class="required-star">*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="nationality" value="Indian" required /> Indian</label>
+            <label><input type="radio" name="nationality" value="Foreign" /> Foreign</label>
+          </div>
+        </div>
+      </div>
+
+      <label for="category">Category (Attach Certificate): <span class="required-star">*</span></label>
+      <select id="category" name="category" required>
+        <option value="">-- Select Category --</option>
+        <option value="GM">GM</option>
+        <option value="SC">SC</option>
+        <option value="ST">ST</option>
+        <option value="Cat-1">Cat-1</option>
+        <option value="Cat-2A">Cat-2A</option>
+        <option value="Cat-2B">Cat-2B</option>
+        <option value="Cat-3A">Cat-3A</option>
+        <option value="Cat-3B">Cat-3B</option>
+        <option value="PWD">PWD</option>
+      </select>
+
+      <div class="section">
+        <h3>Details of the Examination Passed</h3>
+        <p><em>(Enclose attested copies of the marks cards and passing certificate)</em></p>
+      </div>
+
+      <label>Mode of Study Preferred: <span class="required-star">*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="studyMode" value="Full Time" required /> Full Time</label>
+        <label><input type="radio" name="studyMode" value="Part Time" /> Part Time</label>
+      </div>
+
+      <label>Qualified UGC/CSIR (NET)/SLET/K-SET/GRE/GATE/Teacher Fellowship? <span class="required-star">*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="qualifiedExam" value="Yes" required /> Yes</label>
+        <label><input type="radio" name="qualifiedExam" value="No" /> No</label>
+      </div>
+
+      <label for="examName">If Yes, specify the exam passed:</label>
+      <input type="text" id="examName" name="examName" placeholder="Enter exam name if Yes" />
+
+      <label>If sponsored, is the candidate a permanent employee (FIP/QIP)? <span class="required-star">*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="sponsored" value="Yes" required /> Yes</label>
+        <label><input type="radio" name="sponsored" value="No" /> No</label>
+      </div>
+
+      <label for="researchArea">Area of Research Interest: <span class="required-star">*</span></label>
+      <textarea id="researchArea" name="researchArea" rows="3" required></textarea>
+
+      <h4>Particulars of the Entrance Test Fee Paid</h4>
+
+      <label for="feeAmount">Amount (in Rs.): <span class="required-star">*</span></label>
+      <input type="text" id="feeAmount" name="feeAmount" required />
+
+      <label for="ddNo">Bank DD No.: <span class="required-star">*</span></label>
+      <input type="text" id="ddNo" name="ddNo" required />
+
+      <label for="bankUTR">Bank Transaction No./UTR: <span class="required-star">*</span></label>
+      <input type="text" id="bankUTR" name="bankUTR" required />
+
+      <button class="pdf-button" type="button" onclick="generatePDF()">Download PDF</button>
+    </form>
+  </div>
+
+  <script>
+  async function generatePDF() {
+    const form = document.getElementById("phdForm");
+    if (!form.checkValidity()) {
+      alert("Please fill all required fields.");
+      form.reportValidity();
+      return;
+    }
+
+    // Gather all form values:
+    const data = {
+      faculty: form.faculty.value,
+      department: form.department.value,
+      fullName: form.fullName.value.toUpperCase(),
+      address: form.address.value.replace(/\n/g, ' / '),
+      phone: form.phone.value,
+      email: form.email.value,
+      dob: form.dob.value,
+      sex: form.sex.value,
+      nationality: form.nationality.value,
+      category: form.category.value,
+      // Section 2 fields left free for user entry
+      examDetails: form.examDetails?.value || '',
+      studyMode: form.studyMode.value,
+      qualifiedExam: form.qualifiedExam.value,
+      examName: form.examName.value,
+      sponsored: form.sponsored.value,
+      researchArea: form.researchArea.value,
+      // Section 3
+      feeAmount: form.feeAmount.value,
+      ddNo: form.ddNo.value,
+      bankUTR: form.bankUTR.value
+    };
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p','mm','a4');
+
+    // --- Page 1: Basic Details ---
+    doc.setFontSize(16);
+    doc.text("Ph.D. Entrance Application", 105, 15, { align: 'center' });
+    doc.setFontSize(12);
+    doc.autoTable({
+      startY: 25,
+      styles: { cellPadding: 2, fontSize: 11 },
+      head: [['Field','Value']],
+      body: [
+        ['Faculty of', data.faculty],
+        ['Department Name', data.department],
+        ['Name (BLOCK LETTERS)', data.fullName],
+        ['Address', data.address],
+        ['Phone', data.phone],
+        ['Email', data.email],
+        ['Date of Birth', data.dob],
+        ['Sex', data.sex],
+        ['Nationality', data.nationality],
+        ['Category', data.category]
+      ]
+    });
+
+    // --- Page 2: Details of Examination Passed ---
+    doc.addPage();
+    doc.text("Details of the Examination Passed", 14, 15);
+    doc.autoTable({
+      startY: 20,
+      styles: { cellPadding: 2, fontSize: 11 },
+      head: [['Details (attach marks cards & certificates)']],
+      body: [
+        [data.examDetails]
+      ]
+    });
+
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 10,
+      head: [['Mode of Study','Qualified Exam','Exam Name','Sponsored','Research Area']],
+      body: [[
+        data.studyMode,
+        data.qualifiedExam,
+        data.examName,
+        data.sponsored,
+        data.researchArea
+      ]]
+    });
+
+    // --- Page 3: Particulars of Entrance Test Fee Paid ---
+    doc.addPage();
+    doc.text("Particulars of Entrance Test Fee Paid", 14, 15);
+    doc.autoTable({
+      startY: 20,
+      styles: { cellPadding: 2, fontSize: 11 },
+      head: [['Amount (Rs.)','Bank DD No.','Bank Transaction No./UTR']],
+      body: [[
+        data.feeAmount,
+        data.ddNo,
+        data.bankUTR
+      ]]
+    });
+
+    doc.save("PhD_Application_Form.pdf");
+  }
+</script>
+
+</body>
+</html>

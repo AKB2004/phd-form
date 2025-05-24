@@ -121,12 +121,71 @@
 
       <label for="bankUTR">Bank Transaction No./UTR: <span class="required-star">*</span></label>
       <input type="text" id="bankUTR" name="bankUTR" required />
+      
+
+      <h1>Education Qualification Details</h1>
+      <div class="table-responsive">
+  <table id="educationTable">
+    <thead>
+      <tr>
+        <th>Degree & Subject</th>
+        <th>University</th>
+        <th>Year of Passing</th>
+        <th>History of Arrears<br>(Yes/No)</th>
+        <th>Marks</th>
+        <th>Specialization</th>
+        <th>Percentage/CGPA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text" name="pgDegree" placeholder="PG" /></td>
+        <td><input type="text" name="pgUniversity" /></td>
+        <td><input type="text" name="pgYear" /></td>
+        <td>
+          <select name="pgArrears">
+            <option value="">--</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </td>
+        <td><input type="text" name="pgMarks" /></td>
+        <td><input type="text" name="pgSpecialization" /></td>
+        <td><input type="text" name="pgPercentage" /></td>
+      </tr>
+      <tr>
+        <td><input type="text" name="ugDegree" placeholder="UG" /></td>
+        <td><input type="text" name="ugUniversity" /></td>
+        <td><input type="text" name="ugYear" /></td>
+        <td>
+          <select name="ugArrears">
+            <option value="">--</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </td>
+        <td><input type="text" name="ugMarks" /></td>
+        <td><input type="text" name="ugSpecialization" /></td>
+        <td><input type="text" name="ugPercentage" /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+  <p class="note">
+    Note: Enclose two passport size photographs along with necessary documents and Bank Transaction Detail of the fee payment.
+  </p>
+
+  <div class="footer-fields">
+    <label>Place: <input type="text" name="place" /></label>
+    <label>Date: <input type="date" name="placeDate" /></label>
+  </div>
+  <p class="signature-line">Signature of the Candidate: _______________________</p>
 
       <button class="pdf-button" type="button" onclick="generatePDF()">Download PDF</button>
     </form>
   </div>
 
-  <script>
+<script>
   async function generatePDF() {
     const form = document.getElementById("phdForm");
     if (!form.checkValidity()) {
@@ -147,29 +206,52 @@
       sex: form.sex.value,
       nationality: form.nationality.value,
       category: form.category.value,
-      // Section 2 fields left free for user entry
+
       examDetails: form.examDetails?.value || '',
       studyMode: form.studyMode.value,
       qualifiedExam: form.qualifiedExam.value,
       examName: form.examName.value,
       sponsored: form.sponsored.value,
       researchArea: form.researchArea.value,
-      // Section 3
+
       feeAmount: form.feeAmount.value,
       ddNo: form.ddNo.value,
-      bankUTR: form.bankUTR.value
+      bankUTR: form.bankUTR.value,
+
+      pgDegree: form.pgDegree.value,
+      pgUniversity: form.pgUniversity.value,
+      pgYear: form.pgYear.value,
+      pgArrears: form.pgArrears.value,
+      pgMarks: form.pgMarks.value,
+      pgSpecialization: form.pgSpecialization.value,
+
+      ugDegree: form.ugDegree.value,
+      ugUniversity: form.ugUniversity.value,
+      ugYear: form.ugYear.value,
+      ugArrears: form.ugArrears.value,
+      ugMarks: form.ugMarks.value,
+      ugSpecialization: form.ugSpecialization.value,
+
+      note: document.querySelector('.note').innerText,
+      place: form.place.value,
+      placeDate: form.placeDate.value,
+      signatureText: "Signature of the Candidate: _______________________"
     };
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p','mm','a4');
 
-    // --- Page 1: Basic Details ---
+    // === FIRST PAGE: Pages 1–3 Combined ===
     doc.setFontSize(16);
     doc.text("Ph.D. Entrance Application", 105, 15, { align: 'center' });
-    doc.setFontSize(12);
+    doc.setFontSize(11);
+
+    let y = 20;
+
+    // Basic Details
     doc.autoTable({
-      startY: 25,
-      styles: { cellPadding: 2, fontSize: 11 },
+      startY: y,
+      styles: { cellPadding: 1.5, fontSize: 10 },
       head: [['Field','Value']],
       body: [
         ['Faculty of', data.faculty],
@@ -182,23 +264,27 @@
         ['Sex', data.sex],
         ['Nationality', data.nationality],
         ['Category', data.category]
-      ]
+      ],
+      theme: 'grid'
     });
+    y = doc.lastAutoTable.finalY + 6;
 
-    // --- Page 2: Details of Examination Passed ---
-    doc.addPage();
-    doc.text("Details of the Examination Passed", 14, 15);
+    // Details of Examination Passed
+    doc.setFontSize(13);
+    doc.text("Details of the Examination Passed", 14, y);
+    doc.setFontSize(11);
     doc.autoTable({
-      startY: 20,
-      styles: { cellPadding: 2, fontSize: 11 },
+      startY: y + 4,
+      styles: { cellPadding: 1.5, fontSize: 10 },
       head: [['Details (attach marks cards & certificates)']],
-      body: [
-        [data.examDetails]
-      ]
+      body: [[ data.examDetails ]],
+      theme: 'grid'
     });
+    y = doc.lastAutoTable.finalY + 4;
 
     doc.autoTable({
-      startY: doc.lastAutoTable.finalY + 10,
+      startY: y,
+      styles: { cellPadding: 1.5, fontSize: 10 },
       head: [['Mode of Study','Qualified Exam','Exam Name','Sponsored','Research Area']],
       body: [[
         data.studyMode,
@@ -206,26 +292,81 @@
         data.examName,
         data.sponsored,
         data.researchArea
-      ]]
+      ]],
+      theme: 'grid'
+    });
+    y = doc.lastAutoTable.finalY + 6;
+
+    // Particulars of Entrance Test Fee Paid
+    doc.setFontSize(13);
+    doc.text("Particulars of Entrance Test Fee Paid", 14, y);
+    doc.setFontSize(11);
+    doc.autoTable({
+      startY: y + 4,
+      styles: { cellPadding: 1.5, fontSize: 10 },
+      head: [['Amount (Rs.)','Bank DD No.','Bank Transaction No./UTR']],
+      body: [[ data.feeAmount, data.ddNo, data.bankUTR ]],
+      theme: 'grid'
     });
 
-    // --- Page 3: Particulars of Entrance Test Fee Paid ---
+    // === PAGE 4: Education Qualification Details (unchanged) ===
     doc.addPage();
-    doc.text("Particulars of Entrance Test Fee Paid", 14, 15);
+    doc.setFontSize(14);
+    doc.text("Education Qualification Details", 14, 15);
     doc.autoTable({
       startY: 20,
-      styles: { cellPadding: 2, fontSize: 11 },
-      head: [['Amount (Rs.)','Bank DD No.','Bank Transaction No./UTR']],
-      body: [[
-        data.feeAmount,
-        data.ddNo,
-        data.bankUTR
-      ]]
+      theme: 'grid',
+      showHead: 'everyPage',
+      head: [[
+        'Degree and Subject',
+        'University',
+        'Year of Passing',
+        'Any History of Arrears\n(Yes/No)',
+        'Marks\nPercentage/CGPA',
+        'Specialization'
+      ]],
+      body: [
+        [
+          data.pgDegree, data.pgUniversity, data.pgYear,
+          data.pgArrears, data.pgMarks, data.pgSpecialization
+        ],
+        [
+          data.ugDegree, data.ugUniversity, data.ugYear,
+          data.ugArrears, data.ugMarks, data.ugSpecialization
+        ]
+      ],
+      styles: {
+        cellPadding: 3,
+        fontSize: 11,
+        halign: 'center',
+        valign: 'middle',
+        lineColor: [0,0,0],
+        lineWidth: 0.2
+      },
+      headStyles: {
+        fillColor: [255,255,255],
+        textColor: [0,0,0],
+        fontStyle: 'bold'
+      }
     });
+
+    // Note, Place/Date, Signature on Page 4
+    let currY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(11);
+    doc.text(data.note, 14, currY, { maxWidth: 180 });
+    currY += 15;
+    doc.setFontSize(12);
+    doc.text(`Place: ${data.place}`, 14, currY);
+    doc.text(`Date: ${data.placeDate}`, 120, currY);
+    currY += 15;
+    doc.setFontSize(12);
+    doc.text(data.signatureText, 14, currY);
 
     doc.save("PhD_Application_Form.pdf");
   }
 </script>
+
+
 
 </body>
 </html>

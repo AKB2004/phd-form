@@ -10,7 +10,7 @@ body {
 
 #pdf-content {
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
 }
 
 form {
@@ -134,4 +134,112 @@ button.pdf-button:hover {
 }
 @media print {
   .pdf-button { display: none!important; }
+}
+
+//this is eductional part css
+
+
+/* education table */
+#educationTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+#educationTable th,
+#educationTable td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-size: 14px;
+}
+#educationTable th {
+  background: #f0f0f0;
+  font-weight: 600;
+}
+
+/* note paragraph */
+.note {
+  margin-top: 15px;
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* footer fields */
+.footer-fields {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.footer-fields label {
+  font-weight: 600;
+  font-size: 14px;
+}
+.footer-fields input {
+  margin-left: 5px;
+  padding: 6px;
+  font-size: 14px;
+  width: 150px;
+}
+
+/* signature */
+.signature-line {
+  margin-top: 30px;
+  font-weight: 600;
+}
+/* make the table scrollable on narrow screens */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 15px;
+}
+
+/* base table styling */
+#educationTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* evenly distribute columns */
+}
+
+/* header cells */
+#educationTable th {
+  background: #f0f0f0;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px;
+  text-align: center;
+  white-space: nowrap;
+  border: 1px solid #ccc;
+}
+
+/* data cells */
+#educationTable td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  vertical-align: middle;
+}
+
+/* inputs & selects fill their cells */
+#educationTable input,
+#educationTable select {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* remove default cell overflow */
+#educationTable td > * {
+  display: block;
+}
+
+/* spacing for the note */
+.note {
+  margin-top: 20px;
+}
+
+/* tighten up the footer fields */
+.footer-fields {
+  flex-wrap: wrap;
+  gap: 10px;
 }

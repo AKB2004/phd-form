@@ -181,6 +181,89 @@
   </div>
   <p class="signature-line">Signature of the Candidate: _______________________</p>
 
+
+    <!-- ───────── Admission Card Section ───────── -->
+  <div class="admission-card">
+    <h1>Ph.D. Entrance Test – 2024</h1>
+    <h2>Admission Card</h2>
+    <p class="subtitle">(To be submitted along with the application)</p>
+
+    <div class="admission-fields">
+      <div class="field">
+        <label>1. Reg. No<span class="required-star">*</span> :</label>
+        <input type="text" name="regNo" placeholder="________________________" required />
+      </div>
+      <p class="footnote">* (to be allotted by the concerned Dean / Chairman)</p>
+
+      <div class="field">
+        <label>2. Name of the Candidate :</label>
+        <input type="text" name="admissionName" placeholder="________________________" />
+      </div>
+
+      <div class="field">
+        <label>3. Faculty of :</label>
+        <input type="text" name="admissionFaculty" placeholder="________________________" />
+      </div>
+    </div>
+      <!-- ─── Date / Time / Invigilator’s Signature ─── -->
+  <div class="admission-schedule">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Invigilator’s Signature</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="date" name="examDate" /></td>
+          <td><input type="time" name="examTime" /></td>
+          <td><input type="text" name="invigilatorSignature" placeholder="_______________" /></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  
+
+  </div>
+  <!-- ─── Instructions Note ─── -->
+  <div class="admission-note">
+    <strong>Note:</strong>
+    <ul>
+      <li>The admission card duly signed by the concerned Dean/Principal/Chairman will be issued to the candidate on the date of examination.</li>
+      <li>The candidate must carry this Admission Card to the Examination hall and should occupy his/her place in the examination hall 15 minutes before the commencement of examination.</li>
+      <li>The candidate will not be allowed to enter after 30 minutes of the commencement of the examination.</li>
+      <li>This Admission Card is only provisional.</li>
+    </ul>
+  </div>
+  <!-- ──────  <!-- ─── Signature & Acknowledgement Section ─── -->
+  <div class="sign-ack">
+    <div class="sign-lines">
+      <div class="sign-block">
+        <label>Signature of the Candidate</label>
+        <div class="line"></div>
+      </div>
+      <div class="sign-block">
+        <label>Signature of Chairman/Department with seal</label>
+        <div class="line"></div>
+      </div>
+    </div>
+
+    <h3>Acknowledgement</h3>
+    <p class="ack-text">
+      Received the application from Sri/Smt. <input type="text" name="ackName" placeholder="__________" />
+      in connection with Ph.D. Entrance Test- February 2024 on <input type="date" name="ackDate" />.
+    </p>
+
+    <div class="auth-sign">
+      <label>Authorized Signatory</label>
+      <!-- <div class="line short"></div> -->
+    </div>
+  </div>
+
+
       <button class="pdf-button" type="button" onclick="generatePDF()">Download PDF</button>
     </form>
   </div>
@@ -235,7 +318,19 @@
       note: document.querySelector('.note').innerText,
       place: form.place.value,
       placeDate: form.placeDate.value,
-      signatureText: "Signature of the Candidate: _______________________"
+      signatureText: "Signature of the Candidate: _______________________",
+
+      // Admission‐Card fields:
+      regNo: form.regNo.value,
+      admissionName: form.admissionName.value,
+      admissionFaculty: form.admissionFaculty.value,
+      examDate: form.examDate.value,
+      examTime: form.examTime.value,
+      invigilatorSignature: form.invigilatorSignature.value,
+
+      // Acknowledgement:
+      ackName: form.ackName.value,
+      ackDate: form.ackDate.value
     };
 
     const { jsPDF } = window.jspdf;
@@ -245,7 +340,6 @@
     doc.setFontSize(16);
     doc.text("Ph.D. Entrance Application", 105, 15, { align: 'center' });
     doc.setFontSize(11);
-
     let y = 20;
 
     // Basic Details
@@ -269,7 +363,7 @@
     });
     y = doc.lastAutoTable.finalY + 6;
 
-    // Details of Examination Passed
+    // Details of Exam Passed
     doc.setFontSize(13);
     doc.text("Details of the Examination Passed", 14, y);
     doc.setFontSize(11);
@@ -286,18 +380,12 @@
       startY: y,
       styles: { cellPadding: 1.5, fontSize: 10 },
       head: [['Mode of Study','Qualified Exam','Exam Name','Sponsored','Research Area']],
-      body: [[
-        data.studyMode,
-        data.qualifiedExam,
-        data.examName,
-        data.sponsored,
-        data.researchArea
-      ]],
+      body: [[data.studyMode,data.qualifiedExam,data.examName,data.sponsored,data.researchArea]],
       theme: 'grid'
     });
     y = doc.lastAutoTable.finalY + 6;
 
-    // Particulars of Entrance Test Fee Paid
+    // Fee Paid
     doc.setFontSize(13);
     doc.text("Particulars of Entrance Test Fee Paid", 14, y);
     doc.setFontSize(11);
@@ -305,11 +393,11 @@
       startY: y + 4,
       styles: { cellPadding: 1.5, fontSize: 10 },
       head: [['Amount (Rs.)','Bank DD No.','Bank Transaction No./UTR']],
-      body: [[ data.feeAmount, data.ddNo, data.bankUTR ]],
+      body: [[data.feeAmount,data.ddNo,data.bankUTR]],
       theme: 'grid'
     });
 
-    // === PAGE 4: Education Qualification Details (unchanged) ===
+    // === PAGE 4: Education Qualification Details ===
     doc.addPage();
     doc.setFontSize(14);
     doc.text("Education Qualification Details", 14, 15);
@@ -318,53 +406,115 @@
       theme: 'grid',
       showHead: 'everyPage',
       head: [[
-        'Degree and Subject',
-        'University',
-        'Year of Passing',
-        'Any History of Arrears\n(Yes/No)',
-        'Marks\nPercentage/CGPA',
-        'Specialization'
+        'Degree and Subject','University','Year of Passing',
+        'Any History of Arrears\n(Yes/No)','Marks\nPercentage/CGPA','Specialization'
       ]],
       body: [
-        [
-          data.pgDegree, data.pgUniversity, data.pgYear,
-          data.pgArrears, data.pgMarks, data.pgSpecialization
-        ],
-        [
-          data.ugDegree, data.ugUniversity, data.ugYear,
-          data.ugArrears, data.ugMarks, data.ugSpecialization
-        ]
+        [data.pgDegree,data.pgUniversity,data.pgYear,data.pgArrears,data.pgMarks,data.pgSpecialization],
+        [data.ugDegree,data.ugUniversity,data.ugYear,data.ugArrears,data.ugMarks,data.ugSpecialization]
       ],
-      styles: {
-        cellPadding: 3,
-        fontSize: 11,
-        halign: 'center',
-        valign: 'middle',
-        lineColor: [0,0,0],
-        lineWidth: 0.2
-      },
-      headStyles: {
-        fillColor: [255,255,255],
-        textColor: [0,0,0],
-        fontStyle: 'bold'
-      }
+      styles:{cellPadding:3,fontSize:11,halign:'center',valign:'middle',lineColor:[0,0,0],lineWidth:0.2},
+      headStyles:{fillColor:[255,255,255],textColor:[0,0,0],fontStyle:'bold'}
     });
-
-    // Note, Place/Date, Signature on Page 4
     let currY = doc.lastAutoTable.finalY + 10;
     doc.setFontSize(11);
-    doc.text(data.note, 14, currY, { maxWidth: 180 });
+    doc.text(data.note,14,currY,{ maxWidth:180 });
     currY += 15;
     doc.setFontSize(12);
-    doc.text(`Place: ${data.place}`, 14, currY);
-    doc.text(`Date: ${data.placeDate}`, 120, currY);
+    doc.text(`Place: ${data.place}`,14,currY);
+    doc.text(`Date: ${data.placeDate}`,120,currY);
     currY += 15;
     doc.setFontSize(12);
-    doc.text(data.signatureText, 14, currY);
+    doc.text(data.signatureText,14,currY);
 
+    // === PAGE 5: Admission Card Signature & Acknowledgement ===
+     doc.addPage();
+
+    // 1) Headings
+    doc.setFontSize(16);
+    doc.text("Ph.D. Entrance Test – 2024", 105, 15, { align: 'center' });
+    doc.setFontSize(14);
+    doc.text("Admission Card", 105, 23, { align: 'center' });
+    doc.setFontSize(11);
+    doc.text("(To be submitted along with the application)", 105, 30, {
+      align: 'center',
+      fontStyle: 'italic'
+    });
+
+    // 2) Photo frame (top-right)
+    // x=150mm, y=10mm, width=40mm, height=50mm
+    doc.setDrawColor(0);
+    doc.setLineWidth(0.5);
+    doc.rect(150, 10, 40, 50);
+
+    // 3) Admission fields lines
+    let lineY = 65;
+    doc.setFontSize(12);
+    doc.text("1. Reg. No * :", 14, lineY);
+    doc.line(50, lineY - 1, 140, lineY - 1);
+    doc.setFontSize(10);
+    doc.text("* (to be allotted by the concerned Dean /Chairman)", 14, lineY + 5);
+
+    lineY += 20;
+    doc.setFontSize(12);
+    doc.text("2. Name of the Candidate :", 14, lineY);
+    doc.line(70, lineY - 1, 140, lineY - 1);
+
+    lineY += 15;
+    doc.text("3. Faculty of :", 14, lineY);
+    doc.line(50, lineY - 1, 140, lineY - 1);
+
+    // 4) Schedule table
+    const tableStartY = lineY + 20;
+    doc.autoTable({
+      startY: tableStartY,
+      theme: 'grid',
+      head: [['Date', 'Time', "Invigilator’s Signature"]],
+      body: [[data.examDate, data.examTime, data.invigilatorSignature]],
+      styles: { fontSize: 10, cellPadding: 2 },
+      headStyles: { fillColor: [240, 240, 240] }
+    });
+
+    // 5) Bullet notes, placed neatly below the table
+    let notesY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(11);
+    const notes = [
+      "The admission card duly signed by the concerned Dean/Principal/Chairman will be issued to the candidate on the date of examination.",
+      "The candidate must carry this Admission Card to the Examination hall and should occupy his/her place in the examination hall 15 minutes before the commencement of examination.",
+      "The candidate will not be allowed to enter after 30 minutes of the commencement of the examination.",
+      "This Admission Card is only provisional."
+    ];
+    notes.forEach(txt => {
+      doc.text(`\u2022 ${txt}`, 14, notesY, { maxWidth: 180 });
+      notesY += 6;
+    });
+
+    // 6) Signature lines
+    let sigY = notesY + 15;
+    doc.setFontSize(12);
+    doc.text("Signature of the Candidate", 14, sigY);
+    doc.line(14, sigY + 1, 80, sigY + 1);
+    doc.text("Signature of Chairman/Department with seal", 110, sigY);
+    doc.line(110, sigY + 1, 185, sigY + 1);
+
+    // 7) Acknowledgement
+    let ackY = sigY + 20;
+    doc.setFontSize(14);
+    doc.text("Acknowledgement", 105, ackY, { align: 'center' });
+    doc.setFontSize(11);
+    const ackText = `Received the application from Sri/Smt. ${data.ackName} in connection with Ph.D. Entrance Test- February 2024 on ${data.ackDate}.`;
+    doc.text(ackText, 14, ackY + 8, { maxWidth: 180 });
+
+    // 8) Authorized Signatory
+    let authY = ackY + 30;
+    doc.setFontSize(12);
+    doc.text("Authorized Signatory", 140, authY);
+    doc.line(140, authY + 1, 185, authY + 1);
+    // Save PDF
     doc.save("PhD_Application_Form.pdf");
   }
 </script>
+
 
 
 

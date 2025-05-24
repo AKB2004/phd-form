@@ -243,3 +243,132 @@ button.pdf-button:hover {
   flex-wrap: wrap;
   gap: 10px;
 }
+
+/* Admission Card Styles */
+.admission-card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 5px;
+  background: #fafafa;
+}
+
+.admission-card h1 {
+  text-align: center;
+  font-size: 22px;
+  margin: 0 0 5px;
+}
+
+.admission-card h2 {
+  text-align: center;
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+
+.admission-card .subtitle {
+  text-align: center;
+  font-style: italic;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.admission-fields .field {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.admission-fields label {
+  flex: 0 0 200px;
+  font-weight: 600;
+}
+
+.admission-fields input {
+  flex: 1;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #999;
+  border-radius: 4px;
+}
+
+.admission-card .footnote {
+  font-size: 12px;
+  font-style: italic;
+  margin: -8px 0 16px 200px; /* align under the first field’s label */
+  color: #555;
+}
+
+/* reuse your required-star styling */
+.required-star {
+  color: red;
+  margin-left: 2px;
+}
+/* Signature & Acknowledgement */
+.sign-ack {
+  margin-top: 30px;
+  font-size: 14px;
+  color: #333;
+}
+
+.sign-lines {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.sign-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sign-block label {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.sign-block .line {
+  width: 250px;
+  border-bottom: 1px solid #000;
+  margin-bottom: 5px;
+}
+
+/* Acknowledgement */
+.sign-ack h3 {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.ack-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ack-text input[type="text"],
+.ack-text input[type="date"] {
+  padding: 4px 6px;
+  font-size: 14px;
+  border: 1px solid #999;
+  border-radius: 3px;
+  width: 150px;
+}
+
+/* Authorized Signatory */
+.auth-sign {
+  margin-top: 25px;
+  text-align: right;
+}
+
+.auth-sign label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.auth-sign .line.short {
+  width: 200px;
+  margin-left: auto;
+  border-bottom: 1px solid #000;
+}
